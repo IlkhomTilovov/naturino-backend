@@ -1,0 +1,26 @@
+# .NET build artifacts
+bin/
+obj/
+out/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# EF Core
+*.db
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+appsettings.Development.json
+appsettings.Local.json
+.env
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Naturino.API/Naturino.API.csproj" />
+    <Project Path="src/Naturino.Application/Naturino.Application.csproj" />
+    <Project Path="src/Naturino.Domain/Naturino.Domain.csproj" />
+    <Project Path="src/Naturino.Infrastructure/Naturino.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Naturino.API.IntegrationTests/Naturino.API.IntegrationTests.csproj" />
+    <Project Path="tests/Naturino.Application.Tests/Naturino.Application.Tests.csproj" />
+  </Folder>
+</Solution>
