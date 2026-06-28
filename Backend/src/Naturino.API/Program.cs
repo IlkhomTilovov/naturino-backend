@@ -32,8 +32,13 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Naturino API v1");
     });
+}
 
-    using var scope = app.Services.CreateScope();
+// Applying pending migrations on startup must run in every environment, not just
+// Development — otherwise production keeps the schema from whenever it was last
+// restored from a dump, silently drifting from what the deployed code expects.
+using (var scope = app.Services.CreateScope())
+{
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await db.Database.MigrateAsync();
     await DbSeeder.SeedAsync(db, app.Logger);
