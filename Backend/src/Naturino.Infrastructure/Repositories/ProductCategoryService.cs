@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Naturino.Application.DTOs.Products;
 using Naturino.Application.Services;
@@ -49,19 +50,17 @@ public class ProductCategoryService : IProductCategoryService
         {
             ParentCategoryId = dto.ParentCategoryId,
             Name = dto.Name,
-            NameRu = dto.NameRu,
             Slug = slug,
             Description = dto.Description,
             ImageFileId = dto.ImageFileId,
             SortOrder = dto.SortOrder,
             IsActive = dto.IsActive,
             MetaTitleUz = dto.MetaTitleUz,
-            MetaTitleRu = dto.MetaTitleRu,
             MetaDescriptionUz = dto.MetaDescriptionUz,
-            MetaDescriptionRu = dto.MetaDescriptionRu,
             MetaKeywords = dto.MetaKeywords,
             IsIndexable = dto.IsIndexable,
             IsFollow = dto.IsFollow,
+            Translations = SerializeTranslations(dto.Translations),
         };
 
         _context.ProductCategories.Add(category);
@@ -79,19 +78,17 @@ public class ProductCategoryService : IProductCategoryService
 
         category.ParentCategoryId = dto.ParentCategoryId;
         category.Name = dto.Name;
-        category.NameRu = dto.NameRu;
         category.Slug = slug;
         category.Description = dto.Description;
         category.ImageFileId = dto.ImageFileId;
         category.SortOrder = dto.SortOrder;
         category.IsActive = dto.IsActive;
         category.MetaTitleUz = dto.MetaTitleUz;
-        category.MetaTitleRu = dto.MetaTitleRu;
         category.MetaDescriptionUz = dto.MetaDescriptionUz;
-        category.MetaDescriptionRu = dto.MetaDescriptionRu;
         category.MetaKeywords = dto.MetaKeywords;
         category.IsIndexable = dto.IsIndexable;
         category.IsFollow = dto.IsFollow;
+        category.Translations = SerializeTranslations(dto.Translations);
         category.UpdatedAt = DateTimeOffset.UtcNow;
 
         await _context.SaveChangesAsync(ct);
@@ -151,7 +148,6 @@ public class ProductCategoryService : IProductCategoryService
         Id = category.Id,
         ParentCategoryId = category.ParentCategoryId,
         Name = category.Name,
-        NameRu = category.NameRu,
         Slug = category.Slug,
         Description = category.Description,
         ImageUrl = category.ImageFile?.Url,
@@ -159,11 +155,39 @@ public class ProductCategoryService : IProductCategoryService
         IsActive = category.IsActive,
         ProductCount = productCount,
         MetaTitleUz = category.MetaTitleUz,
-        MetaTitleRu = category.MetaTitleRu,
         MetaDescriptionUz = category.MetaDescriptionUz,
-        MetaDescriptionRu = category.MetaDescriptionRu,
         MetaKeywords = category.MetaKeywords,
         IsIndexable = category.IsIndexable,
         IsFollow = category.IsFollow,
+        Translations = DeserializeTranslations(category),
     };
+
+    private static string? SerializeTranslations(Dictionary<string, CategoryTranslationDto>? translations)
+    {
+        if (translations is null || translations.Count == 0) return null;
+        return JsonSerializer.Serialize(translations);
+    }
+
+    /// <summary>Reads the Translations jsonb column, then fills in a "ru" entry from the legacy
+    /// NameRu/MetaTitleRu/MetaDescriptionRu columns when Translations has none — so data entered
+    /// before this column existed keeps showing up after the admin form switches to translations-only editing.</summary>
+    private static Dictionary<string, CategoryTranslationDto> DeserializeTranslations(ProductCategory category)
+    {
+        var result = string.IsNullOrWhiteSpace(category.Translations)
+            ? new Dictionary<string, CategoryTranslationDto>()
+            : JsonSerializer.Deserialize<Dictionary<string, CategoryTranslationDto>>(category.Translations) ?? [];
+
+        var hasLegacyRu = category.NameRu is not null || category.MetaTitleRu is not null || category.MetaDescriptionRu is not null;
+        if (hasLegacyRu && !result.ContainsKey("ru"))
+        {
+            result["ru"] = new CategoryTranslationDto
+            {
+                Name = category.NameRu,
+                MetaTitle = category.MetaTitleRu,
+                MetaDescription = category.MetaDescriptionRu,
+            };
+        }
+
+        return result;
+    }
 }

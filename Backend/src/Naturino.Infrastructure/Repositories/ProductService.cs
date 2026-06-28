@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Naturino.Application.Common;
 using Naturino.Application.DTOs.Products;
@@ -116,6 +117,7 @@ public class ProductService : IProductService
             AgeGroup = dto.AgeGroup,
             IsFeatured = dto.IsFeatured,
             IsActive = dto.IsActive,
+            Translations = SerializeTranslations(dto.Translations),
             CreatedBy = userId,
             UpdatedBy = userId
         };
@@ -152,6 +154,7 @@ public class ProductService : IProductService
         product.AgeGroup = dto.AgeGroup;
         product.IsFeatured = dto.IsFeatured;
         product.IsActive = dto.IsActive;
+        product.Translations = SerializeTranslations(dto.Translations);
         product.UpdatedBy = userId;
         product.UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -343,8 +346,21 @@ public class ProductService : IProductService
         IsActive = product.IsActive,
         CreatedAt = product.CreatedAt,
         UpdatedAt = product.UpdatedAt,
-        Images = product.Images.OrderBy(i => i.SortOrder).Select(MapImage).ToList()
+        Images = product.Images.OrderBy(i => i.SortOrder).Select(MapImage).ToList(),
+        Translations = DeserializeTranslations(product.Translations)
     };
+
+    private static string? SerializeTranslations(Dictionary<string, ProductTranslationDto>? translations)
+    {
+        if (translations is null || translations.Count == 0) return null;
+        return JsonSerializer.Serialize(translations);
+    }
+
+    private static Dictionary<string, ProductTranslationDto> DeserializeTranslations(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return [];
+        return JsonSerializer.Deserialize<Dictionary<string, ProductTranslationDto>>(json) ?? [];
+    }
 
     private static ProductImageDto MapImage(ProductImage i) => new()
     {

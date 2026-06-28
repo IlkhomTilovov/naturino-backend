@@ -11,6 +11,11 @@ public class Product : BaseEntity, ISoftDeletable, IAuditable
     public string? ShortDescription { get; set; }
     public string? Description { get; set; }
     public string? Ingredients { get; set; }
+
+    /// <summary>JSON stored as jsonb: per-language overrides for Name/ShortDescription/Description,
+    /// e.g. {"ru":{"name":"...","shortDescription":"...","description":"..."},"en":{...}}.
+    /// The base Name/ShortDescription/Description columns above remain the default (uz) content.</summary>
+    public string? Translations { get; set; }
     public decimal Price { get; set; }
     public decimal? OldPrice { get; set; }
     public int StockQuantity { get; set; }

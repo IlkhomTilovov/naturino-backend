@@ -21,6 +21,11 @@ public class ProductCategory : BaseEntity
     public bool IsIndexable { get; set; } = true;
     public bool IsFollow { get; set; } = true;
 
+    /// <summary>JSON stored as jsonb: per-language overrides for Name/Description/MetaTitle/MetaDescription
+    /// for every language other than the base (uz), e.g. {"ru":{...},"en":{...}}. Supersedes the legacy
+    /// NameRu/MetaTitleRu/MetaDescriptionRu columns above, which are kept only for backward-compat reads.</summary>
+    public string? Translations { get; set; }
+
     public ProductCategory? ParentCategory { get; set; }
     public ICollection<ProductCategory> ChildCategories { get; set; } = new List<ProductCategory>();
     public MediaFile? ImageFile { get; set; }

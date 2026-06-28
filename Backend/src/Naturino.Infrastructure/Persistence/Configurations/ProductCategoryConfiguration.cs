@@ -28,6 +28,7 @@ public class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCate
         builder.Property(c => c.MetaKeywords).HasMaxLength(300);
         builder.Property(c => c.IsIndexable).HasDefaultValue(true);
         builder.Property(c => c.IsFollow).HasDefaultValue(true);
+        builder.Property(c => c.Translations).HasColumnType("jsonb");
 
         builder.HasIndex(c => c.SortOrder);
 

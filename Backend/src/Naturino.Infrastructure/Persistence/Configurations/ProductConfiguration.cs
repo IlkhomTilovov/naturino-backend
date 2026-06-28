@@ -23,6 +23,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.ShortDescription).HasMaxLength(500);
         builder.Property(p => p.NutritionalInfo).HasColumnType("jsonb");
         builder.Property(p => p.PackagingOptions).HasColumnType("jsonb");
+        builder.Property(p => p.Translations).HasColumnType("jsonb");
 
         builder.Property(p => p.Price).HasColumnType("decimal(18,2)");
         builder.Property(p => p.OldPrice).HasColumnType("decimal(18,2)");

@@ -1,5 +1,12 @@
 namespace Naturino.Application.DTOs.Products;
 
+public class ProductTranslationDto
+{
+    public string? Name { get; set; }
+    public string? ShortDescription { get; set; }
+    public string? Description { get; set; }
+}
+
 public class ProductImageDto
 {
     public Guid Id { get; set; }
@@ -46,6 +53,7 @@ public class ProductDto
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
     public List<ProductImageDto> Images { get; set; } = [];
+    public Dictionary<string, ProductTranslationDto> Translations { get; set; } = [];
 }
 
 public class ProductCreateDto
@@ -65,6 +73,7 @@ public class ProductCreateDto
     public bool IsFeatured { get; set; }
     public bool IsActive { get; set; } = true;
     public List<Guid> MediaFileIds { get; set; } = [];
+    public Dictionary<string, ProductTranslationDto> Translations { get; set; } = [];
 }
 
 public class ProductUpdateDto : ProductCreateDto
