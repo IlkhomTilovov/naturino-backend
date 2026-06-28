@@ -23,11 +23,20 @@ public class Product : BaseEntity, ISoftDeletable, IAuditable
     public string? Brand { get; set; }
     public string? AgeGroup { get; set; }
 
-    /// <summary>JSON stored as jsonb, e.g. protein %, fat %, fiber %.</summary>
+    /// <summary>JSON array stored as jsonb: [{ "label": "Protein", "value": "22", "unit": "%" }].</summary>
     public string? NutritionalInfo { get; set; }
 
-    /// <summary>JSON array stored as jsonb, e.g. [{ "weightKg": 1.5, "sku": "..." }].</summary>
+    /// <summary>JSON array stored as jsonb: [{ "weight": "1.5", "unit": "kg", "barcode": "...", "isDefault": true }].</summary>
     public string? PackagingOptions { get; set; }
+
+    /// <summary>JSON array stored as jsonb: [{ "name": "Real Salmon", "percentage": "32" }], ordered by array position.</summary>
+    public string? IngredientsList { get; set; }
+
+    /// <summary>JSON array stored as jsonb: [{ "code": "ISO22000", "certificateNumber": "...", "expiryDate": "..." }].</summary>
+    public string? Certifications { get; set; }
+
+    /// <summary>JSON object stored as jsonb: { "moq": "...", "hsCode": "...", "incoterms": ["FOB"], "exportMarkets": [...] }.</summary>
+    public string? ExportInfo { get; set; }
 
     public bool IsFeatured { get; set; }
     public bool IsActive { get; set; } = true;

@@ -118,6 +118,11 @@ public class ProductService : IProductService
             IsFeatured = dto.IsFeatured,
             IsActive = dto.IsActive,
             Translations = SerializeTranslations(dto.Translations),
+            NutritionalInfo = SerializeList(dto.NutritionalInfo),
+            PackagingOptions = SerializeList(dto.PackagingOptions),
+            IngredientsList = SerializeList(dto.IngredientsList),
+            Certifications = SerializeList(dto.Certifications),
+            ExportInfo = dto.ExportInfo is null ? null : JsonSerializer.Serialize(dto.ExportInfo),
             CreatedBy = userId,
             UpdatedBy = userId
         };
@@ -155,6 +160,11 @@ public class ProductService : IProductService
         product.IsFeatured = dto.IsFeatured;
         product.IsActive = dto.IsActive;
         product.Translations = SerializeTranslations(dto.Translations);
+        product.NutritionalInfo = SerializeList(dto.NutritionalInfo);
+        product.PackagingOptions = SerializeList(dto.PackagingOptions);
+        product.IngredientsList = SerializeList(dto.IngredientsList);
+        product.Certifications = SerializeList(dto.Certifications);
+        product.ExportInfo = dto.ExportInfo is null ? null : JsonSerializer.Serialize(dto.ExportInfo);
         product.UpdatedBy = userId;
         product.UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -347,13 +357,32 @@ public class ProductService : IProductService
         CreatedAt = product.CreatedAt,
         UpdatedAt = product.UpdatedAt,
         Images = product.Images.OrderBy(i => i.SortOrder).Select(MapImage).ToList(),
-        Translations = DeserializeTranslations(product.Translations)
+        Translations = DeserializeTranslations(product.Translations),
+        NutritionalInfo = DeserializeList<NutritionalItemDto>(product.NutritionalInfo),
+        PackagingOptions = DeserializeList<PackagingOptionDto>(product.PackagingOptions),
+        IngredientsList = DeserializeList<IngredientItemDto>(product.IngredientsList),
+        Certifications = DeserializeList<ProductCertificationDto>(product.Certifications),
+        ExportInfo = string.IsNullOrWhiteSpace(product.ExportInfo)
+            ? new ExportInfoDto()
+            : JsonSerializer.Deserialize<ExportInfoDto>(product.ExportInfo) ?? new ExportInfoDto(),
     };
 
     private static string? SerializeTranslations(Dictionary<string, ProductTranslationDto>? translations)
     {
         if (translations is null || translations.Count == 0) return null;
         return JsonSerializer.Serialize(translations);
+    }
+
+    private static string? SerializeList<T>(List<T>? items)
+    {
+        if (items is null || items.Count == 0) return null;
+        return JsonSerializer.Serialize(items);
+    }
+
+    private static List<T> DeserializeList<T>(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return [];
+        return JsonSerializer.Deserialize<List<T>>(json) ?? [];
     }
 
     private static Dictionary<string, ProductTranslationDto> DeserializeTranslations(string? json)

@@ -7,6 +7,44 @@ public class ProductTranslationDto
     public string? Description { get; set; }
 }
 
+public class NutritionalItemDto
+{
+    public string Label { get; set; } = string.Empty;
+    public string? Value { get; set; }
+    public string? Unit { get; set; }
+}
+
+public class PackagingOptionDto
+{
+    public string? Weight { get; set; }
+    public string? Unit { get; set; }
+    public string? Barcode { get; set; }
+    public bool IsDefault { get; set; }
+}
+
+public class IngredientItemDto
+{
+    public string Name { get; set; } = string.Empty;
+    public string? Percentage { get; set; }
+}
+
+public class ProductCertificationDto
+{
+    public string Code { get; set; } = string.Empty;
+    public string? CertificateNumber { get; set; }
+    public string? ExpiryDate { get; set; }
+}
+
+public class ExportInfoDto
+{
+    public string? Moq { get; set; }
+    public string? HsCode { get; set; }
+    public List<string> Incoterms { get; set; } = [];
+    public string? ProductionCapacity { get; set; }
+    public string? LeadTime { get; set; }
+    public List<string> ExportMarkets { get; set; } = [];
+}
+
 public class ProductImageDto
 {
     public Guid Id { get; set; }
@@ -54,6 +92,11 @@ public class ProductDto
     public DateTimeOffset UpdatedAt { get; set; }
     public List<ProductImageDto> Images { get; set; } = [];
     public Dictionary<string, ProductTranslationDto> Translations { get; set; } = [];
+    public List<NutritionalItemDto> NutritionalInfo { get; set; } = [];
+    public List<PackagingOptionDto> PackagingOptions { get; set; } = [];
+    public List<IngredientItemDto> IngredientsList { get; set; } = [];
+    public List<ProductCertificationDto> Certifications { get; set; } = [];
+    public ExportInfoDto ExportInfo { get; set; } = new();
 }
 
 public class ProductCreateDto
@@ -74,6 +117,11 @@ public class ProductCreateDto
     public bool IsActive { get; set; } = true;
     public List<Guid> MediaFileIds { get; set; } = [];
     public Dictionary<string, ProductTranslationDto> Translations { get; set; } = [];
+    public List<NutritionalItemDto> NutritionalInfo { get; set; } = [];
+    public List<PackagingOptionDto> PackagingOptions { get; set; } = [];
+    public List<IngredientItemDto> IngredientsList { get; set; } = [];
+    public List<ProductCertificationDto> Certifications { get; set; } = [];
+    public ExportInfoDto? ExportInfo { get; set; }
 }
 
 public class ProductUpdateDto : ProductCreateDto
