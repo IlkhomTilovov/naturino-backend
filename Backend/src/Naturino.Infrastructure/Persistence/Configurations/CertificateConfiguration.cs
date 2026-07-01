@@ -17,6 +17,13 @@ public class CertificateConfiguration : IEntityTypeConfiguration<Certificate>
         builder.Property(c => c.CertificateNumber).HasMaxLength(100);
         builder.Property(c => c.IssueDate).HasColumnType("date");
         builder.Property(c => c.ExpiryDate).HasColumnType("date");
+        builder.Property(c => c.Icon).HasMaxLength(50);
+        builder.Property(c => c.Category).HasMaxLength(100);
+        builder.Property(c => c.Scope).HasMaxLength(100);
+        builder.Property(c => c.VerificationUrl).HasMaxLength(500);
+        builder.Property(c => c.TranslationsJson)
+            .HasColumnType("jsonb")
+            .HasDefaultValueSql("'{}'::jsonb");
 
         builder.Property(c => c.SortOrder).HasDefaultValue(0);
         builder.Property(c => c.IsActive).HasDefaultValue(true);

@@ -19,6 +19,7 @@ public static class DbSeeder
         await SeedPagesAsync(context);
         await SeedLanguagesAsync(context);
         await SeedThemesAsync(context);
+        await SeedCertificatesAsync(context);
 
         await context.SaveChangesAsync();
     }
@@ -603,6 +604,111 @@ public static class DbSeeder
         }
         """),
     };
+
+    private static async Task SeedCertificatesAsync(ApplicationDbContext context)
+    {
+        if (await context.Certificates.AnyAsync()) return;
+
+        var certs = new[]
+        {
+            new Certificate
+            {
+                Title = "ISO 22000 — Oziq-ovqat xavfsizligi menejment tizimi",
+                Description = "Oziq-ovqat xavfsizligi menejment tizimiga oid xalqaro standart. Ishlab chiqarishning barcha bosqichlarida xavfsizlik nazoratini ta'minlaydi.",
+                IssuedBy = "Bureau Veritas Certification",
+                CertificateNumber = "BV-ISO22000-2024-UZ",
+                IssueDate = new DateOnly(2024, 3, 15),
+                ExpiryDate = new DateOnly(2027, 3, 14),
+                Icon = "shield",
+                Category = "quality",
+                Scope = "international",
+                VerificationUrl = "https://www.bureauveritas.com/",
+                TranslationsJson = """{"ru":{"title":"ISO 22000 — Система менеджмента безопасности пищевых продуктов","description":"Международный стандарт по системам менеджмента безопасности пищевых продуктов."},"en":{"title":"ISO 22000 — Food Safety Management System","description":"International standard for food safety management systems covering all stages of production."}}""",
+                SortOrder = 0,
+                IsActive = true,
+            },
+            new Certificate
+            {
+                Title = "HACCP — Xavflarni tahlil qilish va kritik nazorat nuqtalari",
+                Description = "Oziq-ovqat xavfsizligini ta'minlashning profilaktik yondashuvi. Biologik, kimyoviy va jismoniy xavflarni nazorat qiladi.",
+                IssuedBy = "SGS Certification Services",
+                CertificateNumber = "SGS-HACCP-2024-001",
+                IssueDate = new DateOnly(2024, 1, 10),
+                ExpiryDate = new DateOnly(2026, 1, 9),
+                Icon = "shield",
+                Category = "safety",
+                Scope = "international",
+                VerificationUrl = "https://www.sgs.com/",
+                TranslationsJson = """{"ru":{"title":"HACCP — Анализ рисков и критические контрольные точки","description":"Превентивный подход к обеспечению безопасности пищевых продуктов."},"en":{"title":"HACCP — Hazard Analysis and Critical Control Points","description":"Preventive approach to food safety managing biological, chemical and physical hazards."}}""",
+                SortOrder = 1,
+                IsActive = true,
+            },
+            new Certificate
+            {
+                Title = "HALOL sertifikati — Islom talablariga muvofiqlik",
+                Description = "Mahsulotlar islom talablariga to'liq mos tarzda ishlab chiqarilishini tasdiqlaydi. MDH va Yaqin Sharq bozorlariga eksport uchun majburiy.",
+                IssuedBy = "O'zbekiston Musulmonlari Idorasi",
+                CertificateNumber = "UMI-HALAL-2024-0892",
+                IssueDate = new DateOnly(2024, 6, 1),
+                ExpiryDate = new DateOnly(2025, 5, 31),
+                Icon = "seal",
+                Category = "halal",
+                Scope = "cis",
+                TranslationsJson = """{"ru":{"title":"Сертификат ХАЛЯЛЬ — Соответствие требованиям ислама","description":"Подтверждает, что продукция производится в полном соответствии с исламскими требованиями."},"en":{"title":"HALAL Certificate — Islamic Compliance","description":"Confirms that products are manufactured in full compliance with Islamic requirements."}}""",
+                SortOrder = 2,
+                IsActive = true,
+            },
+            new Certificate
+            {
+                Title = "Veterinariya sertifikati — O'zbekiston Respublikasi",
+                Description = "O'zbekiston Qishloq xo'jaligi vazirligi tomonidan berilgan veterinariya sog'liqni saqlash sertifikati. Uy hayvonlari ozuqasini eksport qilish uchun talab qilinadi.",
+                IssuedBy = "O'zbekiston Qishloq xo'jaligi vazirligi — Davlat veterinariya xizmati",
+                CertificateNumber = "DVX-2024-PET-4471",
+                IssueDate = new DateOnly(2024, 2, 20),
+                ExpiryDate = new DateOnly(2025, 2, 19),
+                Icon = "document",
+                Category = "veterinary",
+                Scope = "uzbekistan",
+                TranslationsJson = """{"ru":{"title":"Ветеринарный сертификат — Республика Узбекистан","description":"Ветеринарный санитарный сертификат, выданный Министерством сельского хозяйства."},"en":{"title":"Veterinary Certificate — Republic of Uzbekistan","description":"Veterinary sanitary certificate issued by the Ministry of Agriculture for pet food export."}}""",
+                SortOrder = 3,
+                IsActive = true,
+            },
+            new Certificate
+            {
+                Title = "EAC — Yevroosiyo muvofiqlik belgisi",
+                Description = "Mahsulot Yevroosiyo iqtisodiy ittifoqi texnik reglamentlariga muvofiqligini tasdiqlovchi sertifikat. Rossiya, Qozog'iston, Belarus va boshqa EAIU davlatlariga eksport uchun zarur.",
+                IssuedBy = "Yevroosiyo iqtisodiy ittifoqi akkreditatsiya markazi",
+                CertificateNumber = "EAC-TR-CU-2024-PF-001",
+                IssueDate = new DateOnly(2023, 11, 5),
+                ExpiryDate = new DateOnly(2026, 11, 4),
+                Icon = "seal",
+                Category = "export",
+                Scope = "cis",
+                TranslationsJson = """{"ru":{"title":"EAC — Знак соответствия Евразийского союза","description":"Сертификат подтверждает соответствие продукции техническим регламентам ЕАЭС."},"en":{"title":"EAC — Eurasian Conformity Mark","description":"Confirms product compliance with Eurasian Economic Union technical regulations for export."}}""",
+                SortOrder = 4,
+                IsActive = true,
+            },
+            new Certificate
+            {
+                Title = "GMP+ — Yaxshi ishlab chiqarish amaliyoti",
+                Description = "Oziq-ovqat xavfsizligi uchun yaxshi ishlab chiqarish amaliyoti sertifikati. Xom ashyo tanlovidan tayyor mahsulot qadoqlashgacha bo'lgan butun jarayonni qamrab oladi.",
+                IssuedBy = "GMP+ International B.V.",
+                CertificateNumber = "GMPPLUS-FC-2024-1183",
+                IssueDate = new DateOnly(2024, 4, 8),
+                ExpiryDate = new DateOnly(2026, 4, 7),
+                Icon = "award",
+                Category = "quality",
+                Scope = "eu",
+                VerificationUrl = "https://www.gmpplus.org/",
+                TranslationsJson = """{"ru":{"title":"GMP+ — Надлежащая производственная практика","description":"Сертификат надлежащей производственной практики, охватывающий весь производственный процесс."},"en":{"title":"GMP+ — Good Manufacturing Practice","description":"Good manufacturing practice certificate covering the entire production process from raw materials to packaging."}}""",
+                SortOrder = 5,
+                IsActive = true,
+            },
+        };
+
+        context.Certificates.AddRange(certs);
+        await context.SaveChangesAsync();
+    }
 
     private static (SectionType Type, string Content)[] QualitySections() => new[]
     {

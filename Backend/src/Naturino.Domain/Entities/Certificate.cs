@@ -10,6 +10,11 @@ public class Certificate : BaseEntity, ISoftDeletable
     public string? CertificateNumber { get; set; }
     public DateOnly? IssueDate { get; set; }
     public DateOnly? ExpiryDate { get; set; }
+    public string? Icon { get; set; }
+    public string? Category { get; set; }
+    public string? Scope { get; set; }
+    public string? VerificationUrl { get; set; }
+    public string TranslationsJson { get; set; } = "{}";
     public Guid? FileId { get; set; }
     public int SortOrder { get; set; }
     public bool IsActive { get; set; } = true;
