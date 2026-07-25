@@ -31,11 +31,12 @@ public static class DbSeeder
             return;
         }
 
+        // Naturino Pantone palette — base Oil/Forest Green, no orange (accent is Oil Green).
         var colorTokens = """
         {
-          "brand": { "primary": "#0A4B3A", "secondary": "#487d25", "accent": "#f7a83b", "success": "#22C55E", "warning": "#F59E0B", "error": "#EF4444" },
-          "surface": { "background": "#FAFAF7", "card": "#FFFFFF", "muted": "#F3F5EF", "border": "#E5E7EB", "hover": "#F8FAF5" },
-          "text": { "heading": "#0F172A", "body": "#334155", "muted": "#64748B", "inverse": "#FFFFFF" }
+          "brand": { "primary": "#294A34", "secondary": "#7F9773", "accent": "#7F9773", "success": "#22C55E", "warning": "#F59E0B", "error": "#EF4444" },
+          "surface": { "background": "#F3EDE1", "card": "#FFFFFF", "muted": "#EFF2E9", "border": "#E7EBDD", "hover": "#EFF2E9" },
+          "text": { "heading": "#294A34", "body": "#57503F", "muted": "#9F8A6C", "inverse": "#FFFFFF" }
         }
         """;
 
@@ -51,8 +52,8 @@ public static class DbSeeder
             Slug = "naturino-default",
             IsActive = true,
             IsDarkMode = false,
-            FontHeading = "Geist",
-            FontBody = "Geist",
+            FontHeading = "Manrope",
+            FontBody = "Manrope",
             ColorTokensJson = colorTokens,
             TypographyTokensJson = typographyTokens,
             RadiusTokensJson = radiusTokens,

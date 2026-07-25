@@ -23,6 +23,12 @@ builder.Services.AddSwaggerDocs();
 
 var app = builder.Build();
 
+// Serilog's request logger must wrap OUTSIDE the exception handler so it logs the
+// status code the client actually receives (e.g. 404 for NotFoundException) instead
+// of the raw exception it observes bubbling through — otherwise every handled
+// NotFoundException/ValidationException etc. gets misreported as "responded 500".
+app.UseSerilogRequestLogging();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -43,8 +49,6 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
     await DbSeeder.SeedAsync(db, app.Logger);
 }
-
-app.UseSerilogRequestLogging();
 
 if (!app.Environment.IsDevelopment())
 {

@@ -21,5 +21,12 @@ public enum SectionType
     ProductRange,
     ExportCapabilities,
     Gallery,
-    FAQ
+    FAQ,
+    CategoryTabs,
+    PageBanner,
+    BackgroundHero,
+    StatsHero,
+    MinimalHero,
+    BadgeListHero,
+    BreadcrumbHero
 }

@@ -24,3 +24,7 @@ appsettings.Local.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Local/production DB dumps — never commit real data or credential hashes
+*.sql
+*.dump

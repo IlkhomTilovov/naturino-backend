@@ -1,0 +1,9 @@
+# Local/production DB dumps — never commit real data or credential hashes
+*.sql
+*.dump
+
+# Claude Code local project config — not part of the deliverable
+.claude/
+
+# Stray/empty local files
+page.json
