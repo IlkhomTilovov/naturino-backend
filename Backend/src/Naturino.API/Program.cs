@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Naturino.API.Extensions;
 using Naturino.API.Middleware;
@@ -22,6 +23,19 @@ builder.Services.AddCorsPolicy(builder.Configuration);
 builder.Services.AddSwaggerDocs();
 
 var app = builder.Build();
+
+// Nginx terminates TLS and proxies to this container over plain HTTP on the internal
+// Docker network, so without this the app sees every request as HTTP and
+// UseHttpsRedirection() below would bounce it back out as an unnecessary redirect.
+// Backend is never published directly to the internet, so trusting any proxy here
+// (clearing the known-networks allowlist) only means trusting the nginx container.
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 // Serilog's request logger must wrap OUTSIDE the exception handler so it logs the
 // status code the client actually receives (e.g. 404 for NotFoundException) instead
