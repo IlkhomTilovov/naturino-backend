@@ -28,5 +28,20 @@ public enum SectionType
     StatsHero,
     MinimalHero,
     BadgeListHero,
-    BreadcrumbHero
+    BreadcrumbHero,
+    QualityIconGrid,
+    QualityMetrics,
+    QualityChecklist,
+    QualityBadgeWall,
+    QualityPledge,
+    ProcessTimelineVertical,
+    ProcessCardGrid,
+    ProcessSplitImage,
+    ProcessFlow,
+    ProcessAccordion,
+    WhyPartnerIconGrid,
+    WhyPartnerMetrics,
+    WhyPartnerSplitImage,
+    WhyPartnerQuote,
+    WhyPartnerCtaBand
 }
