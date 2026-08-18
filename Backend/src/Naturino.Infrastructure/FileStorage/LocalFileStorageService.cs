@@ -13,7 +13,7 @@ public class LocalFileStorageService : IFileStorageService
 {
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
-        ".jpg", ".jpeg", ".png", ".webp"
+        ".jpg", ".jpeg", ".png", ".webp", ".pdf"
     };
 
     private readonly string _rootPath;
@@ -39,7 +39,7 @@ public class LocalFileStorageService : IFileStorageService
         {
             throw new Domain.Exceptions.ValidationException(new Dictionary<string, string[]>
             {
-                ["file"] = ["Faqat jpg, jpeg, png, webp formatlari qo'llab-quvvatlanadi."]
+                ["file"] = ["Faqat jpg, jpeg, png, webp, pdf formatlari qo'llab-quvvatlanadi."]
             });
         }
 
