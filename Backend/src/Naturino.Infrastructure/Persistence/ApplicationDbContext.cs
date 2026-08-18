@@ -31,6 +31,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Language> Languages => Set<Language>();
     public DbSet<Theme> Themes => Set<Theme>();
+    public DbSet<Shop> Shops => Set<Shop>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

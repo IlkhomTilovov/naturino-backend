@@ -42,6 +42,7 @@ public static class DependencyInjection
         services.AddScoped<IThemeService, ThemeService>();
         services.AddScoped<ICertificateService, CertificateService>();
         services.AddScoped<ISettingService, SettingService>();
+        services.AddScoped<IShopService, ShopService>();
 
         services.AddAuthentication(options =>
         {
