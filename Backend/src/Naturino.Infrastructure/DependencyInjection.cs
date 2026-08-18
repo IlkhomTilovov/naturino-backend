@@ -41,6 +41,7 @@ public static class DependencyInjection
         services.AddScoped<ILanguageService, LanguageService>();
         services.AddScoped<IThemeService, ThemeService>();
         services.AddScoped<ICertificateService, CertificateService>();
+        services.AddScoped<ISettingService, SettingService>();
 
         services.AddAuthentication(options =>
         {
