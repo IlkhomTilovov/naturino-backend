@@ -1,5 +1,10 @@
 using Naturino.Application.Services;
 using Naturino.Domain.Exceptions;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Webp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Naturino.Infrastructure.FileStorage;
 
@@ -11,9 +16,19 @@ public class FileStorageSettings
 
 public class LocalFileStorageService : IFileStorageService
 {
+    // Uploaded photos routinely come straight off a camera/export at 3000px+
+    // and get displayed at a fraction of that size everywhere on the site —
+    // capping the long edge here is most of the win for page load time.
+    private const int MaxDimension = 2200;
+
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".jpg", ".jpeg", ".png", ".webp", ".pdf"
+    };
+
+    private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".jpg", ".jpeg", ".png", ".webp"
     };
 
     private readonly string _rootPath;
@@ -52,8 +67,17 @@ public class LocalFileStorageService : IFileStorageService
 
         var fullPath = Path.Combine(targetDirectory, safeFileName);
 
-        await using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None);
-        await content.CopyToAsync(fileStream, ct);
+        long sizeBytes;
+        if (ImageExtensions.Contains(extension) && content.CanSeek)
+        {
+            sizeBytes = await SaveOptimizedImageAsync(content, extension, fullPath, ct);
+        }
+        else
+        {
+            await using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None);
+            await content.CopyToAsync(fileStream, ct);
+            sizeBytes = fileStream.Length;
+        }
 
         var relativeUrl = $"{_publicBasePath}/{datedFolder.Replace('\\', '/')}/{safeFileName}";
 
@@ -61,8 +85,55 @@ public class LocalFileStorageService : IFileStorageService
         {
             FileName = safeFileName,
             RelativeUrl = relativeUrl,
-            SizeBytes = fileStream.Length
+            SizeBytes = sizeBytes
         };
+    }
+
+    // Resizes oversized photos down to MaxDimension and re-encodes with
+    // reasonable compression. Falls back to a raw copy for anything
+    // ImageSharp can't decode, so a malformed file never blocks an upload.
+    private static async Task<long> SaveOptimizedImageAsync(Stream content, string extension, string fullPath, CancellationToken ct)
+    {
+        try
+        {
+            using var image = await Image.LoadAsync(content, ct);
+
+            if (image.Width > MaxDimension || image.Height > MaxDimension)
+            {
+                image.Mutate(x => x.Resize(new ResizeOptions
+                {
+                    Mode = ResizeMode.Max,
+                    Size = new Size(MaxDimension, MaxDimension),
+                    Sampler = KnownResamplers.Lanczos3
+                }));
+            }
+
+            await using (var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                switch (extension.ToLowerInvariant())
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                        await image.SaveAsJpegAsync(fileStream, new JpegEncoder { Quality = 82 }, ct);
+                        break;
+                    case ".webp":
+                        await image.SaveAsWebpAsync(fileStream, new WebpEncoder { Quality = 82 }, ct);
+                        break;
+                    default:
+                        await image.SaveAsPngAsync(fileStream, new PngEncoder { CompressionLevel = PngCompressionLevel.BestCompression }, ct);
+                        break;
+                }
+            }
+
+            return new FileInfo(fullPath).Length;
+        }
+        catch (UnknownImageFormatException)
+        {
+            content.Seek(0, SeekOrigin.Begin);
+            await using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None);
+            await content.CopyToAsync(fileStream, ct);
+            return fileStream.Length;
+        }
     }
 
     public void Delete(string relativeUrl)
